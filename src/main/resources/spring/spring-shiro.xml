@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- 配置緩存管理器 -->
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <!-- 指定 ehcache 的配置文件，下面会给到 ehcache-shiro.xml-->
+        <property name="cacheManagerConfigFile" value="classpath:ehcache-shiro.xml"/>
+    </bean>
+
+    <!-- 配置进行授权和认证的 Realm，要新增一个java类来实现，下面会有，class=包名.类名，init-methood是初始化的方法 -->
+    <bean id="myRealm" class="com.hou.xjw.shiro.ShiroRealm">
+    </bean>
+
+    <!-- 配置 Shiro 的 SecurityManager Bean. -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="realm" ref="myRealm"/>
+    </bean>
+
+    <!-- 配置 Bean 后置处理器: 会自动的调用和 Spring 整合后各个组件的生命周期方法. -->
+    <bean id="lifecycleBeanPostProcessor"
+          class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor" />
+    <bean        class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" />
+    </bean>
+
+    <!--&lt;!&ndash; 记录菜单 &ndash;&gt;-->
+    <!--<bean id="rememberMenuFilter" class="com.innotek.core.support.filter.RememberMenuFilter">-->
+        <!--<property name="redirectUrl" value="/login.jsp"/>-->
+    <!--</bean>-->
+    <!--<bean id="sessionExpireFilter" class="com.innotek.core.support.filter.SessionExpireFilter" />-->
+
+    <!-- 配置ShiroFilter bean:该bean的id必须和web.xml文件中配置的shiro-filter的name一致 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 装配 securityManager -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 配置登陆页面 -->
+        <!-- logiUrl认证提交地址，如果没有认证通过将会请求此地址进行认证，
+        请求此地址将由formAuthenticationFilter进行表单认证 -->
+        <property name="loginUrl" value="/login/login.hou"/>
+        <!-- 登陆成功后的一面，建议不配置 -->
+        <!--<property name="successUrl" value="/shiro-success.jsp"/>-->
+        <!-- 通过unauthorizedUrl指定没有权限时跳转页面 -->
+        <property name="unauthorizedUrl" value="/shiro-unauthorized.jsp"/>
+        <!-- 具体配置需要拦截哪些 URL, 以及访问对应的 URL 时使用 Shiro 的什么 Filter 进行拦截.  -->
+        <!--<property name="filters">-->
+            <!--<util:map>-->
+                <!--<entry key="rememberMenu" value-ref="rememberMenuFilter"></entry>-->
+                <!--<entry key="sessionExpire" value-ref="sessionExpireFilter"></entry>-->
+            <!--</util:map>-->
+        <!--</property>-->
+        <property name="filterChainDefinitions">
+            <value>
+                <!--静态资源可以匿名访问 -->
+                /login.jsp = anon
+                /register.jsp = anon
+                /reg/toRegist.hou = anon
+                /shiro-logout = logout
+                /retPage/** = anon
+                /classes/** = anon
+                /css/** = anon
+                /fonts/** = anon
+                /img/** = anon
+                /js/** = anon
+                /plugins/** = anon
+                <!-- /**=authc 表示所有的url都需要认证才能访问 -->
+                /** = authc
+            </value>
+        </property>
+    </bean>
+
+</beans>

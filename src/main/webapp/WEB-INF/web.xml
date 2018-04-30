@@ -1,8 +1,8 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
-<web-app>
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
   <display-name>Archetype Created Web Application</display-name>
 
   <context-param>
@@ -18,4 +18,79 @@
     <servlet-name>WeatherForecastServlet</servlet-name>
     <url-pattern>/WeatherForecast</url-pattern>
   </servlet-mapping>
+
+  <!-- 加载Spring容器配置 -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!-- 设置Spring容器加载所有的配置文件的路径 -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:spring/spring-config.xml</param-value>
+  </context-param>
+
+  <!-- 配置SpringMVC核心控制器 -->
+  <servlet>
+    <servlet-name>springMVC</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath*:spring/spring-mvc.xml</param-value>
+    </init-param>
+    <!-- 启动加载一次 -->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <!--为DispatcherServlet建立映射 -->
+  <servlet-mapping>
+    <servlet-name>springMVC</servlet-name>
+    <!-- 此处可以可以配置成*.do -->
+    <url-pattern>*.hou</url-pattern>
+  </servlet-mapping>
+
+  <!-- 防止Spring内存溢出监听器 -->
+  <listener>
+    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+  </listener>
+
+  <!-- shiro权限拦截 -->
+  <!-- shiro过滤器，DelegatingFilterProxy通过代理模式将spring容器的bean和filter关联起来 -->
+  <filter>
+    <filter-name>shiroFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <init-param>
+      <param-name>targetFilterLifecycle</param-name>
+      <param-value>true</param-value>
+      <!--设置true由servlet容器控制filter的生命周期-->
+    </init-param>
+    <!--设置spring容器filter的bean id，如果不设置则找与filter-name一致的bean -->
+    <init-param>
+      <param-name>targetBeanName</param-name>
+      <param-value>shiroFilter</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>shiroFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- 解决工程编码过滤器 -->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 </web-app>

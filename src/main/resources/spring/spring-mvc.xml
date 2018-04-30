@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+    <!-- 注解扫描包 -->
+    <context:component-scan base-package="com" />
+
+    <!-- 开启注解 -->
+    <mvc:annotation-driven />
+
+    <!-- 定义跳转的文件的前后缀 ，视图模式配置-->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <bean class="com.hou.xjw.aspect.RequestLogAspect" />
+
+    <!-- shiro异常处理 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.apache.shiro.authz.UnauthorizedException">jsp/retPage/unauthorized</prop>
+                <prop key="org.apache.shiro.authz.UnauthenticatedException">jsp/retPage/unauthorized</prop>
+                <prop key="org.apache.shiro.authz.AuthorizationException">jsp/retPage/unauthorized</prop>
+                <prop key="java.lang.Throwable">jsp/retPage/unauthorized</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>
