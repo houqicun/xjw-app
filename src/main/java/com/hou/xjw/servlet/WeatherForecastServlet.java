@@ -5,6 +5,7 @@ import com.hou.xjw.model.juhe.weatherForecast.ResultJson;
 import com.hou.xjw.model.juhe.weatherForecast.SkJson;
 import com.hou.xjw.utils.HttpClientUtil;
 import com.hou.xjw.utils.JsonUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -39,6 +40,10 @@ public class WeatherForecastServlet extends HttpServlet{
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("utf-8");
         String cityName = req.getParameter("cityName");
+
+        if (StringUtils.isBlank(cityName)) {
+            cityName = "";
+        }
 
         String cnUrlencode = URLEncoder.encode(cityName, "utf-8");
         //TODO 后期优化此处配置 考虑不同的数据源

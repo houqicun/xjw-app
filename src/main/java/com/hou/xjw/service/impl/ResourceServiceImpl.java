@@ -20,4 +20,16 @@ public class ResourceServiceImpl implements ResourceService {
         List<Resource> list = resourceMapper.getResourceByRoleId(roleId);
         return list;
     }
+
+    @Override
+    public List<Resource> getMenuByRoleId(Integer roleId) {
+        List<Resource> list = resourceMapper.getMenuByRoleId(roleId);
+        return list;
+    }
+
+    @Override
+    public List<Resource> getResourceList() {
+        List<Resource> resourceList = resourceMapper.getResourceList();
+        return resourceList;
+    }
 }

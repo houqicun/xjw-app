@@ -8,4 +8,6 @@ public interface RoleService {
 
     List<Role> getRoleByUserId(Integer userId);
 
+    List<Role> getRoleList();
+
 }

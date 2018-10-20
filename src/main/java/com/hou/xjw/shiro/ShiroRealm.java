@@ -102,9 +102,9 @@ public class ShiroRealm extends AuthorizingRealm {
     /**
      * 添加资源
      */
-    private void addResource(Integer userId,SimpleAuthorizationInfo info) {
+    private void addResource(Integer userId, SimpleAuthorizationInfo info) {
         List<Role> roles = roleService.getRoleByUserId(userId);
-        if(roles!=null&&roles.size()>0){
+        if (roles != null && roles.size() > 0) {
             for (Role role : roles) {
                 //info.addRole(role.getRoleName());
                 List<com.hou.xjw.model.shiroPermission.Resource> list =

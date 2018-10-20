@@ -20,4 +20,10 @@ public class RoleServiceImpl implements RoleService {
         List<Role> list = roleMapper.getRoleByUserId(userId);
         return list;
     }
+
+    @Override
+    public List<Role> getRoleList() {
+        List<Role> roleList = roleMapper.getRoleList();
+        return roleList;
+    }
 }

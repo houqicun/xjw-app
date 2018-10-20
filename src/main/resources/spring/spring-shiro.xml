@@ -8,7 +8,7 @@
     http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!-- 配置緩存管理器 -->
-    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+    <bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
         <!-- 指定 ehcache 的配置文件，下面会给到 ehcache-shiro.xml-->
         <property name="cacheManagerConfigFile" value="classpath:ehcache-shiro.xml"/>
     </bean>
@@ -19,7 +19,7 @@
 
     <!-- 配置 Shiro 的 SecurityManager Bean. -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-        <property name="cacheManager" ref="cacheManager"/>
+        <property name="cacheManager" ref="shiroCacheManager"/>
         <property name="realm" ref="myRealm"/>
     </bean>
 
@@ -49,7 +49,7 @@
         <!-- 登陆成功后的一面，建议不配置 -->
         <!--<property name="successUrl" value="/shiro-success.jsp"/>-->
         <!-- 通过unauthorizedUrl指定没有权限时跳转页面 -->
-        <property name="unauthorizedUrl" value="/shiro-unauthorized.jsp"/>
+        <!--<property name="unauthorizedUrl" value="/shiro-unauthorized.jsp"/>-->
         <!-- 具体配置需要拦截哪些 URL, 以及访问对应的 URL 时使用 Shiro 的什么 Filter 进行拦截.  -->
         <!--<property name="filters">-->
             <!--<util:map>-->

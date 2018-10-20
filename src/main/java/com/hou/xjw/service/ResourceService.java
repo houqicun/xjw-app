@@ -8,4 +8,7 @@ public interface ResourceService {
 
     List<Resource> getResourceByRoleId(Integer roleId);
 
+    List<Resource> getMenuByRoleId(Integer roleId);
+
+    List<Resource> getResourceList();
 }
